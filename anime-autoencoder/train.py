@@ -11,8 +11,7 @@ from torchsummary import summary
 import matplotlib.pyplot as plt
 
 EPOCHS = 300
-BATCH_SIZE = 256
-BETA = 0.0001
+BATCH_SIZE = 16
 
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -52,8 +51,6 @@ def train():
 
             # Kullback-Leibler Divergence
             kl_loss = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())
-            if e < 10:
-                kl_loss = 0
 
             # Total Loss
             loss = rec_loss + kl_loss
@@ -62,7 +59,7 @@ def train():
             loss.backward()
             optimizer.step()
 
-            if i_batch % 20 == 0:
+            if i_batch % 1000 == 0:
                 print("Ep. {0:>3} with {1:>5} batches; {2:5.2f} loss".format(e, i_batch, loss))
 
         with torch.no_grad():

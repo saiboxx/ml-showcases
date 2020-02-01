@@ -27,7 +27,7 @@ class AnimeFaceDataset(Dataset):
         return len(self.images)
 
     def __getitem__(self, idx: int) -> list:
-        return self.transform_get(self.images[idx])
+        return self.images[idx]
 
     def get_images(self) -> list:
         print("Loading dataset to memory.")
