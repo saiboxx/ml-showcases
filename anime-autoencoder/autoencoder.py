@@ -1,6 +1,5 @@
 import torch
-from torch import nn, clamp
-from torch.distributions import Normal
+from torch import nn
 
 
 class ConvVAE(nn.Module):
@@ -28,9 +27,9 @@ class Encoder(nn.Module):
         self.conv2 = nn.Conv2d(in_channels=128, out_channels=64, kernel_size=3, padding=1)
         self.conv3 = nn.Conv2d(in_channels=64, out_channels=32, kernel_size=3, padding=1)
 
-        self.fc1 = nn.Linear(in_features=32*8*8, out_features=256)
-        self.mu = nn.Linear(in_features=256, out_features=64)
-        self.logvar = nn.Linear(in_features=256, out_features=64)
+        self.fc1 = nn.Linear(in_features=32*8*8, out_features=64)
+        self.mu = nn.Linear(in_features=64, out_features=64)
+        self.logvar = nn.Linear(in_features=64, out_features=64)
 
         self.elu = nn.ELU()
         self.max_pool = nn.MaxPool2d(2, 2)
@@ -60,8 +59,8 @@ class Encoder(nn.Module):
 class Decoder(nn.Module):
     def __init__(self):
         super().__init__()
-        self.fc1 = nn.Linear(in_features=64, out_features=256)
-        self.fc2 = nn.Linear(in_features=256, out_features=32*8*8)
+        self.fc1 = nn.Linear(in_features=64, out_features=64)
+        self.fc2 = nn.Linear(in_features=64, out_features=32*8*8)
         self.conv1 = nn.ConvTranspose2d(in_channels=32, out_channels=64, kernel_size=3, padding=1)
         self.conv2 = nn.ConvTranspose2d(in_channels=64, out_channels=128, kernel_size=3, padding=1)
         self.conv3 = nn.ConvTranspose2d(in_channels=128, out_channels=3, kernel_size=3, padding=1)
