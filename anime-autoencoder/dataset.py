@@ -3,7 +3,9 @@ import pickle
 from tqdm import tqdm
 from skimage import io
 from torch.utils.data import Dataset
-from torchvision.transforms import Compose, ToPILImage, Resize, CenterCrop, ToTensor
+from torchvision.transforms import \
+    Compose, ToPILImage, Resize, CenterCrop, ToTensor, \
+    RandomPerspective, RandomRotation, RandomResizedCrop
 
 
 class AnimeFaceDataset(Dataset):
@@ -13,14 +15,19 @@ class AnimeFaceDataset(Dataset):
 
     def __init__(self, directory: str):
         self.directory = directory
-        self.transform = Compose([ToPILImage(), Resize(64), CenterCrop(64), ToTensor()])
+        self.transform_load = Compose([ToPILImage(), Resize(64), CenterCrop(64), ToTensor()])
+        self.transform_get = Compose([ToPILImage(),
+                                      RandomPerspective(p=0.2),
+                                      RandomRotation(180),
+                                      RandomResizedCrop(64),
+                                      ToTensor()])
         self.images = self.get_images()
 
     def __len__(self):
         return len(self.images)
 
     def __getitem__(self, idx: int) -> list:
-        return self.images[idx]
+        return self.transform_get(self.images[idx])
 
     def get_images(self) -> list:
         print("Loading dataset to memory.")
@@ -41,4 +48,4 @@ class AnimeFaceDataset(Dataset):
             print("Saved images to pickle file.")
 
         print("Dataset consists of {} images".format(len(images)))
-        return [self.transform(i) for i in images]
+        return [self.transform_load(i) for i in images]
