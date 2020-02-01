@@ -10,8 +10,9 @@ from torchvision import utils
 from torchsummary import summary
 import matplotlib.pyplot as plt
 
-EPOCHS = 200
+EPOCHS = 300
 BATCH_SIZE = 256
+BETA = 0.0001
 
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -53,25 +54,25 @@ def train():
             kl_loss = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())
 
             # Total Loss
-            loss = rec_loss + kl_loss
+            loss = rec_loss + beta * kl_loss
 
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
 
-            if i_batch % 3 == 1:
+            if i_batch % 20 == 0:
                 print("Ep. {0:>3} with {1:>5} batches; {2:5.2f} loss".format(e, i_batch, loss))
 
         with torch.no_grad():
             rand = torch.rand([100, 32]).to(device)
             save_images(autoencoder.decoder(rand), e)
 
-    # Save models
-    os.makedirs("models", exist_ok=True)
-    torch.save(autoencoder.state_dict(), os.path.join("models", "autoencoder.pt"))
-    torch.save(encoder.state_dict(), os.path.join("models", "encoder.pt"))
-    torch.save(decoder.state_dict(), os.path.join("models", "decoder.pt"))
-    print("Saved trained models.")
+        # Save models
+        os.makedirs("models", exist_ok=True)
+        torch.save(autoencoder.state_dict(), os.path.join("models", "autoencoder.pt"))
+        torch.save(encoder.state_dict(), os.path.join("models", "encoder.pt"))
+        torch.save(decoder.state_dict(), os.path.join("models", "decoder.pt"))
+        print("Saved trained models.")
 
 
 def plot_images(images: list):
