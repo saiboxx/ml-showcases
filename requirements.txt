@@ -1,5 +1,7 @@
 numpy
 pandas
 torch
+torchvision
+torchsummary
 tqdm
 scikit-image

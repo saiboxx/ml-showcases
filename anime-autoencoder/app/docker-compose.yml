@@ -1,0 +1,15 @@
+version: '3'
+services:
+  animefacegen:
+    container_name: animefacegen
+    build:
+      context: app
+    volumes:
+      - ./app:/app
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_APP=animeFaceGen
+      - FLASK_DEBUG=1
+      - 'RUN=flask run --host=0.0.0.0 --port=5000'
+    command: flask run --host=0.0.0.0 --port=5000

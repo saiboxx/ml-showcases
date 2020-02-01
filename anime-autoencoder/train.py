@@ -10,8 +10,8 @@ from torchvision import utils
 from torchsummary import summary
 import matplotlib.pyplot as plt
 
-EPOCHS = 100
-BATCH_SIZE = 128
+EPOCHS = 200
+BATCH_SIZE = 256
 
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -42,7 +42,7 @@ def train():
     # Print model summary
     # summary(autoencoder, input_size=(3, 64, 64))
 
-    for e in range(EPOCHS):
+    for e in range(1, EPOCHS + 1):
         for i_batch, sample in enumerate(dataloader):
             x, mu, std = autoencoder(sample.to(device))
 
@@ -62,16 +62,16 @@ def train():
             if i_batch % 3 == 1:
                 print("Ep. {0:>3} with {1:>5} batches; {2:5.2f} loss".format(e, i_batch, loss))
 
-            if i_batch % (len(dataloader.dataset) // 5) == 0:
-                with torch.no_grad():
-                    rand = torch.rand([100, 32]).to(device)
-                    save_images(autoencoder.decoder(rand), e, i_batch)
+        with torch.no_grad():
+            rand = torch.rand([100, 32]).to(device)
+            save_images(autoencoder.decoder(rand), e)
 
     # Save models
     os.makedirs("models", exist_ok=True)
-    torch.save(autoencoder, os.path.join("models", "autoencoder.pt"))
-    torch.save(encoder, os.path.join("models", "encoder.pt"))
-    torch.save(decoder, os.path.join("models", "decoder.pt"))
+    torch.save(autoencoder.state_dict(), os.path.join("models", "autoencoder.pt"))
+    torch.save(encoder.state_dict(), os.path.join("models", "encoder.pt"))
+    torch.save(decoder.state_dict(), os.path.join("models", "decoder.pt"))
+    print("Saved trained models.")
 
 
 def plot_images(images: list):
@@ -83,7 +83,7 @@ def plot_images(images: list):
     plt.show()
 
 
-def save_images(images: tensor, episode: int, batch: int):
+def save_images(images: tensor, episode: int):
     dir = "test_images/"
     os.makedirs(dir, exist_ok=True)
     plt.figure()
@@ -91,7 +91,7 @@ def save_images(images: tensor, episode: int, batch: int):
     plt.imshow(grid.cpu().numpy().transpose((1, 2, 0)))
     plt.axis('off')
     plt.ioff()
-    plt.savefig(dir + str(episode) + "_ep_" + str(batch) + ".png")
+    plt.savefig(dir + str(episode) + "_episode.png")
     plt.close()
 
 
