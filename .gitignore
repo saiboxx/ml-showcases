@@ -132,6 +132,7 @@ dmypy.json
 # Data directory
 data
 data2
+test_images
 
 # PyCharm
 .idea

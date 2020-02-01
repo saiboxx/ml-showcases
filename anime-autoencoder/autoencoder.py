@@ -1,4 +1,3 @@
-import torch
 from torch import nn, clamp
 from torch.distributions import Normal
 
@@ -15,7 +14,6 @@ class ConvVAE(nn.Module):
 
         sample_dist = Normal(mu, std)
         x = self.decoder(sample_dist.sample())
-        x = clamp(x, 0, 1)
         return x, mu, std
 
 
@@ -78,6 +76,7 @@ class Decoder(nn.Module):
         x = self.upsample(x)
         x = self.conv3(x)
         x = self.relu(x)
+        x = clamp(x, 0, 1)
         return x
 
 
