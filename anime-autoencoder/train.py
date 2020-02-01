@@ -66,7 +66,7 @@ def train():
                 print("Ep. {0:>3} with {1:>5} batches; {2:5.2f} loss".format(e, i_batch, loss))
 
         with torch.no_grad():
-            rand = torch.rand([100, 32]).to(device)
+            rand = torch.rand([100, 64]).to(device)
             save_images(autoencoder.decoder(rand), e)
 
         # Save models
