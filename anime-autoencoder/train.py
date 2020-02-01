@@ -54,7 +54,7 @@ def train():
             kl_loss = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())
 
             # Total Loss
-            loss = rec_loss + beta * kl_loss
+            loss = rec_loss + BETA * kl_loss
 
             optimizer.zero_grad()
             loss.backward()
