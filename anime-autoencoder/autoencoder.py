@@ -1,3 +1,4 @@
+import torch
 from torch import nn, clamp
 from torch.distributions import Normal
 
@@ -10,11 +11,13 @@ class ConvVAE(nn.Module):
         self.decoder = decoder
 
     def forward(self, x):
-        mu, std = self.encoder(x)
+        mu, logvar = self.encoder(x)
 
-        sample_dist = Normal(mu, std)
-        x = self.decoder(sample_dist.sample())
-        return x, mu, std
+        std = torch.exp(0.5 * logvar)
+        eps = torch.randn_like(std)
+        z = mu + eps*std
+        x = self.decoder(z)
+        return x, mu, logvar
 
 
 class Encoder(nn.Module):
@@ -27,7 +30,7 @@ class Encoder(nn.Module):
 
         self.fc1 = nn.Linear(in_features=32*8*8, out_features=64)
         self.mu = nn.Linear(in_features=64, out_features=32)
-        self.std = nn.Linear(in_features=64, out_features=32)
+        self.logvar = nn.Linear(in_features=64, out_features=32)
 
         self.elu = nn.ELU()
         self.max_pool = nn.MaxPool2d(2, 2)
@@ -45,9 +48,13 @@ class Encoder(nn.Module):
         x = x.view(-1, 32*8*8)
         x = self.fc1(x)
         x = self.elu(x)
+
         mu = self.mu(x)
-        std = self.std(x)
-        return mu, std
+        mu = self.elu(mu)
+
+        logvar = self.logvar(x)
+        logvar = self.elu(logvar)
+        return mu, logvar
 
 
 class Decoder(nn.Module):

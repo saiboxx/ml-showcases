@@ -4,16 +4,14 @@
   <div class="col-lg-12 text-center">
     <h1>Anime Character Generator</h1>
   </div>
-  <div class="col-lg-12 text-center">
+  <div class="col-lg-12 text-center" style="padding-top: 20px">
     <form action="" method="post">
-      <button type="button" class="btn btn-primary">--> GO! <--</button>
+      <button type="submit" class="btn btn-primary">--> GO! <--</button>
     </form>
   </div>
-  <div class="col-lg-12 text-center" style="height: 300px">
     {% if image is not none %}
-    {{ image }}
+      <img src="{{ image }}" class="center">
     {% else %}
-        NONE
     {%endif %}
   </div>
 {% endblock %}

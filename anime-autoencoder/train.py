@@ -20,7 +20,7 @@ print("Utilizing device {}.".format(device))
 
 def train():
 
-    data = AnimeFaceDataset("data")
+    data = AnimeFaceDataset("data2")
     dataloader = DataLoader(data,
                             batch_size=BATCH_SIZE,
                             shuffle=True)
@@ -44,13 +44,13 @@ def train():
 
     for e in range(1, EPOCHS + 1):
         for i_batch, sample in enumerate(dataloader):
-            x, mu, std = autoencoder(sample.to(device))
+            x, mu, logvar = autoencoder(sample.to(device))
 
             # Reconstruction Loss
             rec_loss = bce_loss(x, sample.to(device))
 
             # Kullback-Leibler Divergence
-            kl_loss = 0.5 * torch.sum(torch.exp(std) + mu**2 - 1. - std)
+            kl_loss = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())
 
             # Total Loss
             loss = rec_loss + kl_loss
