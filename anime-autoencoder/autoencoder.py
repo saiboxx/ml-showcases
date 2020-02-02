@@ -32,7 +32,6 @@ class ConvEncoder(nn.Module):
         self.logvar = nn.Linear(in_features=64, out_features=64)
 
         self.elu = nn.ELU()
-        self.sigmoid = nn.Sigmoid()
         self.max_pool = nn.MaxPool2d(2, 2)
 
     def forward(self, x):
@@ -50,10 +49,8 @@ class ConvEncoder(nn.Module):
         x = self.elu(x)
 
         mu = self.mu(x)
-        mu = self.sigmoid(mu)
 
         logvar = self.logvar(x)
-        logvar = self.sigmoid(logvar)
         return mu, logvar
 
 
@@ -98,7 +95,6 @@ class Encoder(nn.Module):
         self.logvar = nn.Linear(in_features=128, out_features=64)
 
         self.elu = nn.ELU()
-        self.sigmoid = nn.Sigmoid()
         self.max_pool = nn.MaxPool2d(2, 2)
 
     def forward(self, x):
@@ -113,10 +109,8 @@ class Encoder(nn.Module):
         x = self.elu(x)
 
         mu = self.mu(x)
-        mu = self.sigmoid(mu)
 
         logvar = self.logvar(x)
-        logvar = self.sigmoid(logvar)
         return mu, logvar
 
 

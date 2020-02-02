@@ -65,11 +65,11 @@ def train():
             loss.backward()
             optimizer.step()
 
-            if i_batch % 1000 == 0:
+            if i_batch % 100 == 0:
                 print("Ep. {0:>3} with {1:>5} batches; {2:5.2f} loss".format(e, i_batch, loss))
 
         with torch.no_grad():
-            rand = torch.rand([100, 64]).to(device)
+            rand = (-1 - 1) * torch.rand([100, 64]).to(device) + 1
             save_images(autoencoder.decoder(rand), e)
 
         # Save models
