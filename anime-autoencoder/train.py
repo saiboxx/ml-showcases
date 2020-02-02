@@ -1,6 +1,7 @@
 import os
+from argparse import ArgumentParser
 from dataset import AnimeFaceDataset
-from autoencoder import ConvVAE, Encoder, Decoder
+from autoencoder import VAE, Encoder, Decoder, ConvEncoder, ConvDecoder
 import torch
 from torch import tensor
 from torch.nn import BCELoss
@@ -10,9 +11,11 @@ from torchvision import utils
 from torchsummary import summary
 import matplotlib.pyplot as plt
 
-EPOCHS = 300
-BATCH_SIZE = 16
-
+parser = ArgumentParser()
+parser.add_argument('--epochs', dest='epochs', default=200, type=int)
+parser.add_argument('--conv', dest='conv', action='store_true')
+parser.add_argument('--batch_size', dest='batch_size', default=128, type=int)
+args = parser.parse_args()
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 print("Utilizing device {}.".format(device))
@@ -20,17 +23,20 @@ print("Utilizing device {}.".format(device))
 
 def train():
 
-    data = AnimeFaceDataset("data")
+    data = AnimeFaceDataset("data2")
     dataloader = DataLoader(data,
-                            batch_size=BATCH_SIZE,
+                            batch_size=args.batch_size,
                             shuffle=True)
     # Plot a few images
     # plot_images(data[:100])
 
-
-    encoder = Encoder()
-    decoder = Decoder()
-    autoencoder = ConvVAE(encoder, decoder)
+    if args.conv:
+        encoder = ConvEncoder()
+        decoder = ConvDecoder()
+    else:
+        encoder = Encoder()
+        decoder = Decoder()
+    autoencoder = VAE(encoder, decoder)
 
     encoder.to(device)
     decoder.to(device)
@@ -40,9 +46,9 @@ def train():
     bce_loss = BCELoss()
 
     # Print model summary
-    # summary(autoencoder, input_size=(3, 64, 64))
+    summary(autoencoder, input_size=(3, 64, 64))
 
-    for e in range(1, EPOCHS + 1):
+    for e in range(1, args.epochs + 1):
         for i_batch, sample in enumerate(dataloader):
             x, mu, logvar = autoencoder(sample.to(device))
 

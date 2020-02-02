@@ -2,7 +2,7 @@ import torch
 from torch import nn
 
 
-class ConvVAE(nn.Module):
+class VAE(nn.Module):
     def __init__(self, encoder: nn.Module, decoder: nn.Module):
         super().__init__()
 
@@ -19,7 +19,7 @@ class ConvVAE(nn.Module):
         return x, mu, logvar
 
 
-class Encoder(nn.Module):
+class ConvEncoder(nn.Module):
     def __init__(self):
         super().__init__()
 
@@ -32,6 +32,7 @@ class Encoder(nn.Module):
         self.logvar = nn.Linear(in_features=64, out_features=64)
 
         self.elu = nn.ELU()
+        self.sigmoid = nn.Sigmoid()
         self.max_pool = nn.MaxPool2d(2, 2)
 
     def forward(self, x):
@@ -49,14 +50,14 @@ class Encoder(nn.Module):
         x = self.elu(x)
 
         mu = self.mu(x)
-        mu = self.elu(mu)
+        mu = self.sigmoid(mu)
 
         logvar = self.logvar(x)
-        logvar = self.elu(logvar)
+        logvar = self.sigmoid(logvar)
         return mu, logvar
 
 
-class Decoder(nn.Module):
+class ConvDecoder(nn.Module):
     def __init__(self):
         super().__init__()
         self.fc1 = nn.Linear(in_features=64, out_features=64)
@@ -86,3 +87,61 @@ class Decoder(nn.Module):
         return x
 
 
+class Encoder(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.fc1 = nn.Linear(in_features=64*64*3, out_features=2048)
+        self.fc2 = nn.Linear(in_features=2048, out_features=1024)
+        self.fc3 = nn.Linear(in_features=1024, out_features=256)
+        self.fc4 = nn.Linear(in_features=256, out_features=128)
+        self.mu = nn.Linear(in_features=128, out_features=64)
+        self.logvar = nn.Linear(in_features=128, out_features=64)
+
+        self.elu = nn.ELU()
+        self.sigmoid = nn.Sigmoid()
+        self.max_pool = nn.MaxPool2d(2, 2)
+
+    def forward(self, x):
+        x = x.view(-1, 64*64*3)
+        x = self.fc1(x)
+        x = self.elu(x)
+        x = self.fc2(x)
+        x = self.elu(x)
+        x = self.fc3(x)
+        x = self.elu(x)
+        x = self.fc4(x)
+        x = self.elu(x)
+
+        mu = self.mu(x)
+        mu = self.sigmoid(mu)
+
+        logvar = self.logvar(x)
+        logvar = self.sigmoid(logvar)
+        return mu, logvar
+
+
+class Decoder(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.fc1 = nn.Linear(in_features=64, out_features=128)
+        self.fc2 = nn.Linear(in_features=128, out_features=256)
+        self.fc3 = nn.Linear(in_features=256, out_features=1024)
+        self.fc4 = nn.Linear(in_features=1024, out_features=2048)
+        self.fc5 = nn.Linear(in_features=2048, out_features=64*64*3)
+
+        self.elu = nn.ELU()
+        self.sigmoid = nn.Sigmoid()
+
+    def forward(self, x):
+        x = self.fc1(x)
+        x = self.elu(x)
+        x = self.fc2(x)
+        x = self.elu(x)
+        x = self.fc3(x)
+        x = self.elu(x)
+        x = self.fc4(x)
+        x = self.elu(x)
+        x = self.fc5(x)
+        x = self.sigmoid(x)
+        x = x.view(-1, 3, 64, 64)
+        return x
