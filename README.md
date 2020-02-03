@@ -1,2 +1,8 @@
 # ml-showcases
-A growing collection of neural architectures and small ML projects
+
+This repository contains a growing number of little ML projects. The goal is to recreate und collect different types of neural architectures.
+
+---
+
+### Anime Autoencoder
+The Anime Autoencoder is a Convolutional Variational Autoencoder, which is trained to generate Anime characters.
