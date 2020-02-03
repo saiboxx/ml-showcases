@@ -1,12 +1,12 @@
 from flask import Flask
 import torch
-from .autoencoder import Decoder
+from .autoencoder import ConvDecoder
 
 
 def create_app():
     app = Flask(__name__)
-    decoder = Decoder()
-    decoder.load_state_dict(torch.load("models/decoder.pt"))
+    decoder = ConvDecoder()
+    decoder.load_state_dict(torch.load("models/decoder.pt", map_location=torch.device('cpu')))
     decoder.eval()
     app.config['MODEL'] = decoder
 

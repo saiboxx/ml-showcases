@@ -18,7 +18,7 @@ def index():
     if request.method == 'POST':
         decoder = current_app.config["MODEL"]
         with torch.no_grad():
-            rand = torch.rand([25, 32])
+            rand = torch.rand([25, 64])
             images = decoder(rand)
 
         plt.figure(figsize=(8, 5))
@@ -29,14 +29,6 @@ def index():
         # Convert plot to PNG image
         png_image = io.BytesIO()
         plt.savefig(png_image, format="png")
-
-        # fig = Figure()
-        # axis = fig.add_subplot(1, 1, 1)
-        # axis.grid()
-        # axis.plot(range(5), range(5), "ro-")
-
-        # png_image = io.BytesIO()
-        # FigureCanvas(plt).print_png(png_image)
 
         # Encode PNG image to base64 string
         pngImageB64String = "data:image/png;base64,"
