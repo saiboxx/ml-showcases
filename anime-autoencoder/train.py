@@ -114,8 +114,8 @@ def save_images(images: tensor, episode: int, marker: str):
 
 
 def get_kl_weight(epoch: int) -> float:
-    min_epoch = 10
-    max_epoch = 30
+    min_epoch = 5
+    max_epoch = 15
 
     if epoch < min_epoch:
         return 0
