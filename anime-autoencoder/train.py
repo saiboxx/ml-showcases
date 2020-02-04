@@ -23,7 +23,7 @@ print("Utilizing device {}.".format(device))
 
 def train():
 
-    data = AnimeFaceDataset("data2")
+    data = AnimeFaceDataset("data")
     dataloader = DataLoader(data,
                             batch_size=args.batch_size,
                             shuffle=True)
