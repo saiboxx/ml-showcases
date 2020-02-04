@@ -8,7 +8,7 @@ I will tune hyperparameters in near future to solve this issue.
 
 ![Example of character generation](example/example_characters.png)
 
-As it can be seen in the picture, the Decoder always generates the same image out of randomized latent space, which is not the intendet behaviour.
+As it can be seen in the picture, the Decoder always generates the same image out of randomized latent space, which is not the intended behaviour.
 
 ### How to use ?
 -->TBD<--
