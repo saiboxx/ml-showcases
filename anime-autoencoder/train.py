@@ -58,7 +58,7 @@ def train():
             rec_loss = mse_loss(x, sample.to(device))
 
             # Kullback-Leibler Divergence
-            kl_loss = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp()) / (64 * 64)
+            kl_loss = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp()) / (64 * 64 * args.batch_size)
 
             # Total Loss
             loss = rec_loss + kl_weight * kl_loss
@@ -74,7 +74,7 @@ def train():
 
         with torch.no_grad():
             # Save generated images
-            rand = (-1 - 1) * torch.rand([100, 64]).to(device) + 1
+            rand = torch.randn([100, 64]).to(device)
             save_images(autoencoder.decoder(rand), e, "generated")
             # Save reconstructed images
             images = torch.stack(data[:100]).to(device)
