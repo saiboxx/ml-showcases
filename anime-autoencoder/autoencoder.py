@@ -27,9 +27,9 @@ class ConvEncoder(nn.Module):
         self.conv2 = nn.Conv2d(in_channels=128, out_channels=64, kernel_size=3, padding=1)
         self.conv3 = nn.Conv2d(in_channels=64, out_channels=32, kernel_size=3, padding=1)
 
-        self.fc1 = nn.Linear(in_features=32*8*8, out_features=64)
-        self.mu = nn.Linear(in_features=64, out_features=64)
-        self.logvar = nn.Linear(in_features=64, out_features=64)
+        self.fc1 = nn.Linear(in_features=32*16*16, out_features=64)
+        self.mu = nn.Linear(in_features=64, out_features=32)
+        self.logvar = nn.Linear(in_features=64, out_features=32)
 
         self.elu = nn.ELU()
         self.max_pool = nn.MaxPool2d(2, 2)
@@ -44,7 +44,7 @@ class ConvEncoder(nn.Module):
         x = self.conv3(x)
         x = self.elu(x)
         x = self.max_pool(x)
-        x = x.view(-1, 32*8*8)
+        x = x.view(-1, 32*16*16)
         x = self.fc1(x)
         x = self.elu(x)
 
@@ -57,8 +57,8 @@ class ConvEncoder(nn.Module):
 class ConvDecoder(nn.Module):
     def __init__(self):
         super().__init__()
-        self.fc1 = nn.Linear(in_features=64, out_features=64)
-        self.fc2 = nn.Linear(in_features=64, out_features=32*8*8)
+        self.fc1 = nn.Linear(in_features=32, out_features=64)
+        self.fc2 = nn.Linear(in_features=64, out_features=32*16*16)
         self.conv1 = nn.ConvTranspose2d(in_channels=32, out_channels=64, kernel_size=3, padding=1)
         self.conv2 = nn.ConvTranspose2d(in_channels=64, out_channels=128, kernel_size=3, padding=1)
         self.conv3 = nn.ConvTranspose2d(in_channels=128, out_channels=3, kernel_size=3, padding=1)
@@ -71,7 +71,7 @@ class ConvDecoder(nn.Module):
         x = self.fc1(x)
         x = self.elu(x)
         x = self.fc2(x)
-        x = x.view(-1, 32, 8, 8)
+        x = x.view(-1, 32, 16, 16)
         x = self.upsample(x)
         x = self.conv1(x)
         x = self.elu(x)

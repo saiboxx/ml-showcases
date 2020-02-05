@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 
 parser = ArgumentParser()
 parser.add_argument('--epochs', dest='epochs', default=200, type=int)
-parser.add_argument('--conv', dest='conv', action='store_true')
+parser.add_argument('--fully_connected', dest='fully_connected', action='store_true')
 parser.add_argument('--batch_size', dest='batch_size', default=128, type=int)
 args = parser.parse_args()
 
@@ -30,12 +30,12 @@ def train():
     # Plot a few images
     # plot_images(data[:100])
 
-    if args.conv:
-        encoder = ConvEncoder()
-        decoder = ConvDecoder()
-    else:
+    if args.fully_connected:
         encoder = Encoder()
         decoder = Decoder()
+    else:
+        encoder = ConvEncoder()
+        decoder = ConvDecoder()
     autoencoder = VAE(encoder, decoder)
 
     encoder.to(device)
@@ -46,7 +46,7 @@ def train():
     mse_loss = MSELoss()
 
     # Print model summary
-    summary(autoencoder, input_size=(3, 64, 64))
+    summary(autoencoder, input_size=(3, 128, 128))
 
     kl_weight = 0
 
@@ -74,7 +74,7 @@ def train():
 
         with torch.no_grad():
             # Save generated images
-            rand = torch.randn([100, 64]).to(device)
+            rand = torch.randn([100, 32]).to(device)
             save_images(autoencoder.decoder(rand), e, "generated")
             # Save reconstructed images
             images = torch.stack(data[:100]).to(device)
