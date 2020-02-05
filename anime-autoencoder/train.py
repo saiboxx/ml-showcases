@@ -46,7 +46,7 @@ def train():
     mse_loss = MSELoss()
 
     # Print model summary
-    summary(autoencoder, input_size=(3, 128, 128))
+    summary(autoencoder, input_size=(3, 64, 64))
 
     kl_weight = 0
 

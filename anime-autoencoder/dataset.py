@@ -15,7 +15,7 @@ class AnimeFaceDataset(Dataset):
 
     def __init__(self, directory: str):
         self.directory = directory
-        self.transform_load = Compose([ToPILImage(), Resize(128), CenterCrop(128), ToTensor()])
+        self.transform_load = Compose([ToPILImage(), Resize(64), CenterCrop(64), ToTensor()])
         self.images = self.get_images()
 
     def __len__(self):
