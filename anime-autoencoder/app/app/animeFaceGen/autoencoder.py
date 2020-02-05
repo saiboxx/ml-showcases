@@ -28,8 +28,8 @@ class ConvEncoder(nn.Module):
         self.conv3 = nn.Conv2d(in_channels=64, out_channels=32, kernel_size=3, padding=1)
 
         self.fc1 = nn.Linear(in_features=32*8*8, out_features=64)
-        self.mu = nn.Linear(in_features=64, out_features=64)
-        self.logvar = nn.Linear(in_features=64, out_features=64)
+        self.mu = nn.Linear(in_features=64, out_features=32)
+        self.logvar = nn.Linear(in_features=64, out_features=32)
 
         self.elu = nn.ELU()
         self.max_pool = nn.MaxPool2d(2, 2)
@@ -57,7 +57,7 @@ class ConvEncoder(nn.Module):
 class ConvDecoder(nn.Module):
     def __init__(self):
         super().__init__()
-        self.fc1 = nn.Linear(in_features=64, out_features=64)
+        self.fc1 = nn.Linear(in_features=32, out_features=64)
         self.fc2 = nn.Linear(in_features=64, out_features=32*8*8)
         self.conv1 = nn.ConvTranspose2d(in_channels=32, out_channels=64, kernel_size=3, padding=1)
         self.conv2 = nn.ConvTranspose2d(in_channels=64, out_channels=128, kernel_size=3, padding=1)
@@ -87,7 +87,7 @@ class ConvDecoder(nn.Module):
 class Encoder(nn.Module):
     def __init__(self):
         super().__init__()
-        self.fc1 = nn.Linear(in_features=64*64*3, out_features=2048)
+        self.fc1 = nn.Linear(in_features=32*32*3, out_features=2048)
         self.fc2 = nn.Linear(in_features=2048, out_features=1024)
         self.fc3 = nn.Linear(in_features=1024, out_features=256)
         self.fc4 = nn.Linear(in_features=256, out_features=128)
@@ -98,7 +98,7 @@ class Encoder(nn.Module):
         self.max_pool = nn.MaxPool2d(2, 2)
 
     def forward(self, x):
-        x = x.view(-1, 64*64*3)
+        x = x.view(-1, 32*32*3)
         x = self.fc1(x)
         x = self.elu(x)
         x = self.fc2(x)
@@ -117,11 +117,11 @@ class Encoder(nn.Module):
 class Decoder(nn.Module):
     def __init__(self):
         super().__init__()
-        self.fc1 = nn.Linear(in_features=64, out_features=128)
+        self.fc1 = nn.Linear(in_features=32, out_features=128)
         self.fc2 = nn.Linear(in_features=128, out_features=256)
         self.fc3 = nn.Linear(in_features=256, out_features=1024)
         self.fc4 = nn.Linear(in_features=1024, out_features=2048)
-        self.fc5 = nn.Linear(in_features=2048, out_features=64*64*3)
+        self.fc5 = nn.Linear(in_features=2048, out_features=32*32*3)
 
         self.elu = nn.ELU()
         self.sigmoid = nn.Sigmoid()
@@ -137,5 +137,5 @@ class Decoder(nn.Module):
         x = self.elu(x)
         x = self.fc5(x)
         x = self.sigmoid(x)
-        x = x.view(-1, 3, 64, 64)
+        x = x.view(-1, 3, 32, 32)
         return x
