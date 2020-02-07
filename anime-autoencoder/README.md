@@ -21,7 +21,7 @@ The loss for the optimization consists of two parts. First MSE is used to resemb
 Therefore I introduced scaling and KL-annealing, which solved this issue.
 
 ### How to use ?
-1. Clone the repository, install `requirements.txt` and navigate to `anime-autoencoder`.
+1. Clone the repository, install `requirements.txt` and navigate to `anime-autoencoder`. Don't forget to download the dataset an place the images in `./anime-autoencoder/data`.
 ```
 git clone https://github.com/saiboxx/ml-showcases.git
 pip install -r requirements.txt
