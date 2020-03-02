@@ -20,6 +20,10 @@ class SGD(Optimizer):
 
     def step(self, model: NeuralNetwork):
         for module in model.modules:
-            if hasattr(module, 'gradients') and len(module.gradients) > 0:
-                update_step = [self.alpha * grad for grad in module.gradients]
+            if hasattr(module, 'gradients') and module.gradients is not None:
+                gradients = []
+                for k, v in module.gradients.items():
+                    gradients.append(sum(v)/len(v))
+
+                update_step = [self.alpha * grad for grad in gradients]
                 module.update(update_step)

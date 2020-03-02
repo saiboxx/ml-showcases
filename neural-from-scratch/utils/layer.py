@@ -7,7 +7,7 @@ class Layer(object):
         self.input = input
         self.output = output
         self.initializer = initializer
-        self.gradients = []
+        self.gradients = None
         self.last_x = None
 
     def __repr__(self):
@@ -41,7 +41,6 @@ class Dense(Layer):
             self.weights = np.random.randn(input, output)
 
         self.bias = np.zeros(output)
-        self.trainable_params = [self.weights, self.bias]
 
     def forward(self, x: np.ndarray) -> np.ndarray:
         self.last_x = x
@@ -54,7 +53,14 @@ class Dense(Layer):
     def get_gradients(self, delta: np.ndarray):
         grad_weights = self.last_x.transpose().dot(delta)
         grad_bias = delta
-        self.gradients = [grad_weights, grad_bias]
+        if self.gradients is None:
+            self.gradients = {
+                'weights': [grad_weights],
+                'bias': [grad_bias]
+            }
+        else:
+            self.gradients['weights'].append(grad_weights)
+            self.gradients['bias'].append(grad_bias)
 
     def update(self, gradients: list):
         self.weights -= gradients[0]

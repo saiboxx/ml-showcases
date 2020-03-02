@@ -38,4 +38,4 @@ class NeuralNetwork(object):
     def zero_grads(self):
         for module in self.modules:
             if hasattr(module, 'gradients'):
-                module.gradients = []
+                module.gradients = None
