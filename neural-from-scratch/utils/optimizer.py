@@ -15,8 +15,8 @@ class Optimizer(object):
 
 
 class SGD(Optimizer):
-    def __init__(self):
-        super(SGD, self).__init__()
+    def __init__(self, alpha: Optional[float] = 0.001):
+        super(SGD, self).__init__(alpha)
 
     def step(self, model: NeuralNetwork):
         for module in model.modules:
