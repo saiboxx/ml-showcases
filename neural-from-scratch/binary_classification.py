@@ -1,23 +1,38 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from argparse import ArgumentParser
 from utils.model import NeuralNetwork
 from utils.layer import Dense
 from utils.activations import Sigmoid, Tanh, Relu
 from utils.losses import MSE
 from utils.optimizer import SGD
-from sklearn.datasets import make_moons
+from sklearn.datasets import make_moons, make_circles
 
-EPOCHS = 250
+###############################################################################
+# SET PARAMETERS                                                              #
+###############################################################################
+EPOCHS = 100
 BATCH_SIZE = 32
 LEARNING_RATE = 0.1
+NUM_SAMPLES = 250
+###############################################################################
+
+parser = ArgumentParser()
+parser.add_argument('--moons', dest='moons', action='store_true')
+args = parser.parse_args()
 
 
 def main():
 
     # Generate training data
-    x, y = make_moons(n_samples=1000, random_state=42, noise=0.1)
+    if args.moons:
+        x, y = make_moons(n_samples=NUM_SAMPLES, random_state=42, noise=0.1)
+    else:
+        x, y = make_circles(n_samples=NUM_SAMPLES, random_state=42, noise=0.1, factor=0.5)
 
-    # Build model architecture
+    ###############################################################################
+    # BUILD MODEL ARCHITECTURE                                                    #
+    ###############################################################################
     model = NeuralNetwork()
     model.add(Dense(2, 64, "he"))
     model.add(Relu())
@@ -27,6 +42,8 @@ def main():
     model.add(Sigmoid())
     model.add_loss(MSE())
     optimizer = SGD(alpha=LEARNING_RATE)
+    ###############################################################################
+
     print(model)
 
     print('Start training with {} epochs'.format(EPOCHS))
@@ -51,6 +68,8 @@ def main():
 
                 # Backpropagation of error
                 model.backward()
+
+            # Apply optimizer and reset gradients
             optimizer.step(model)
             model.zero_grads()
 
@@ -69,7 +88,12 @@ def main():
 
 
 def plot_results(model: NeuralNetwork, data: np.ndarray, label: np.ndarray, accuracy: list, loss: list):
-    xx, yy = np.mgrid[-1.4:2.5:.05, -0.8:1.4:.05]
+    x_min = min(data[:, 0]) - 0.2
+    x_max = max(data[:, 0]) + 0.2
+    y_min = min(data[:, 1]) - 0.2
+    y_max = max(data[:, 1]) + 0.2
+
+    xx, yy = np.mgrid[x_min:x_max:.05, y_min:y_max:.05]
     grid = np.c_[xx.ravel(), yy.ravel()]
     y_hat = model.forward(grid).reshape(xx.shape)
     y_hat_class = np.where(y_hat.squeeze() < 0.5, 0, 1)
@@ -82,6 +106,7 @@ def plot_results(model: NeuralNetwork, data: np.ndarray, label: np.ndarray, accu
     plt.title('Training Progress')
     plt.plot(accuracy, label='Accuracy')
     plt.plot(loss, label='Loss')
+    plt.legend()
     figure.tight_layout()
     plt.show()
 

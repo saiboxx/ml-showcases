@@ -1,3 +1,6 @@
-## Make moon example
+## Make generated examples
 moons:
-	python3 moons_classification.py
+	python3 binary_classification.py --moons
+
+circles:
+	python3 binary_classification.py
