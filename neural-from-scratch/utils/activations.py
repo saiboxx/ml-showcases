@@ -1,4 +1,5 @@
 import numpy as np
+from typing import Optional
 
 
 class Activation(object):
@@ -61,3 +62,32 @@ class Relu(Activation):
 
     def backward(self, delta: np.ndarray) -> np.ndarray:
         return np.multiply(1 * (self.last_x > 0), delta)
+
+
+class LeakyRelu(Activation):
+    def __init__(self, alpha: Optional[float] = 0.01):
+        super(LeakyRelu, self).__init__()
+        self.alpha = alpha
+
+    def forward(self, x: np.ndarray) -> np.ndarray:
+        self.last_x = x
+        return np.where(x < 0, self.alpha * x,  x)
+
+    def backward(self, delta: np.ndarray) -> np.ndarray:
+        x = np.ones_like(self.last_x)
+        x[self.last_x < 0] = self.alpha
+        return np.multiply(x, delta)
+
+
+class ELU(Activation):
+    def __init__(self, alpha: Optional[float] = 0.01):
+        super(ELU, self).__init__()
+        self.alpha = alpha
+
+    def forward(self, x: np.ndarray) -> np.ndarray:
+        self.last_x = x
+        return np.where(x < 0, self.alpha * (np.exp(x) - 1),  x)
+
+    def backward(self, delta: np.ndarray) -> np.ndarray:
+        x = np.where(self.last_x < 0, self.alpha * np.exp(self.last_x),  1)
+        return np.multiply(x, delta)

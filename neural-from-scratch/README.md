@@ -13,16 +13,18 @@ As a result the toolbox provides building blocks for simple experiments and obse
 
 - Dense Layer
 
-### Initialization
+#### Initialization
 
-- He
-- Glorot
+- He Normal
+- Glorot Uniform
 
 #### Activations
 
 - Sigmoid
-- ReLU
 - TanH
+- ReLU
+- LeakyReLU
+- ELU
 
 #### Losses
 
