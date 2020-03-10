@@ -91,3 +91,28 @@ class ELU(Activation):
     def backward(self, delta: np.ndarray) -> np.ndarray:
         x = np.where(self.last_x < 0, self.alpha * np.exp(self.last_x),  1)
         return np.multiply(x, delta)
+
+
+class Softmax(Activation):
+    def __init__(self,):
+        super(Softmax, self).__init__()
+        self.last_activation = None
+
+    def forward(self, x: np.ndarray) -> np.ndarray:
+        e_x = np.exp(x - np.max(x))
+        self.last_activation = e_x / np.sum(e_x, axis=1)[:, None]
+        return self.last_activation
+
+    def backward(self, delta: np.ndarray, ce: Optional[bool] = True) -> np.ndarray:
+        # The derivative is already calculated when using Cross Entropy Loss.
+        if ce:
+            return delta
+        else:
+            # Create Jacobi matrix
+            # Off diagonal
+            jacobi = - np.multiply(self.last_activation[:, :, None], self.last_activation[:, None, :])
+            # Diagonal
+            iy, ix = np.diag_indices_from(jacobi[0])
+            jacobi[:, iy, ix] = np.multiply(self.last_activation, (1 - self.last_activation))
+            # Collapse
+            return np.multiply(np.sum(jacobi, axis=1), delta)

@@ -4,3 +4,6 @@ moons:
 
 circles:
 	python3 binary_classification.py
+
+mnist:
+	python3 mnist_classification.py

@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 from argparse import ArgumentParser
 from utils.model import NeuralNetwork
 from utils.layer import Dense
-from utils.activations import Sigmoid, Tanh, Relu
-from utils.losses import MSE
+from utils.activations import Sigmoid, Tanh, Relu, LeakyRelu, ELU
+from utils.losses import MSE, BinaryCrossEntropy
 from utils.optimizer import SGD
 from sklearn.datasets import make_moons, make_circles
 
@@ -13,7 +13,7 @@ from sklearn.datasets import make_moons, make_circles
 ###############################################################################
 EPOCHS = 100
 BATCH_SIZE = 32
-LEARNING_RATE = 0.1
+LEARNING_RATE = 0.01
 NUM_SAMPLES = 250
 ###############################################################################
 
@@ -28,19 +28,19 @@ def main():
     if args.moons:
         x, y = make_moons(n_samples=NUM_SAMPLES, random_state=42, noise=0.1)
     else:
-        x, y = make_circles(n_samples=NUM_SAMPLES, random_state=42, noise=0.1, factor=0.5)
+        x, y = make_circles(n_samples=NUM_SAMPLES, random_state=42, noise=0.1, factor=0.2)
 
     ###############################################################################
     # BUILD MODEL ARCHITECTURE                                                    #
     ###############################################################################
     model = NeuralNetwork()
     model.add(Dense(2, 64, "he"))
-    model.add(Relu())
+    model.add(ELU())
     model.add(Dense(64, 32, "he"))
-    model.add(Relu())
+    model.add(ELU())
     model.add(Dense(32, 1, "he"))
     model.add(Sigmoid())
-    model.add_loss(MSE())
+    model.add_loss(BinaryCrossEntropy())
     optimizer = SGD(alpha=LEARNING_RATE)
     ###############################################################################
 

@@ -25,16 +25,19 @@ As a result the toolbox provides building blocks for simple experiments and obse
 - ReLU
 - LeakyReLU
 - ELU
+- Softmax
 
 #### Losses
 
 - Mean Squared Error (MSE)
+- Binary Cross Entropy
+- Categorical Cross Entropy (w/ Softmax)
 
 #### Optimizer
 
 - Stochastic Gradient Descent (SGD)
 
-**WIP & Ideas:** Softmax, Crossentropy, Adam, Batch Normalization
+**WIP & Ideas:** Adam, Batch Normalization
 
 ### Examples
 
@@ -45,6 +48,13 @@ As a result the toolbox provides building blocks for simple experiments and obse
 
 The repository comes with two examples that can be produced by ```make moons``` and ```make circles```.
 The plot shows the training progress and the resulting decision boundary.
+
+Further experiments were done by using the classic *MNIST* dataset with Cross Entropy and Softmax.
+A better result is expected when tuning hyperparameters or using a larger net.
+    
+    <p align="center">
+    <img src="media/mnist_classification.png">
+    </p>
 
 ### Build & train your model
 

@@ -14,6 +14,8 @@ class Dataset(object):
             = self.get_data()
         self.train /= 255
         self.test /= 255
+        self.train_label = self.one_hot_encode(self.train_label)
+        self.test_label = self.one_hot_encode(self.test_label)
 
     def get_data(self) -> Tuple:
         print('Loading training and validation data.')
@@ -25,8 +27,8 @@ class Dataset(object):
             test = np.genfromtxt('data/mnist_test.csv', delimiter=',', skip_header=1)
             pickle.dump((train, test), open(os.path.join('data', 'data.pkl'), 'wb'))
 
-        train_label = train[:, 0]
-        test_label = test[:, 0]
+        train_label = train[:, 0].astype(np.int)
+        test_label = test[:, 0].astype(np.int)
 
         train = np.delete(train, axis=1, obj=0)
         test = np.delete(test, axis=1, obj=0)
@@ -37,3 +39,7 @@ class Dataset(object):
               .format(test.shape[0], test.shape[1]))
 
         return train, train_label, test, test_label
+
+    def one_hot_encode(self, label: np.ndarray) -> np.ndarray:
+        num_classes = np.max(label) + 1
+        return np.eye(num_classes)[label]
