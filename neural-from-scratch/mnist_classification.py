@@ -7,15 +7,14 @@ from utils.model import NeuralNetwork
 from utils.layer import Dense
 from utils.activations import Sigmoid, Tanh, Relu, LeakyRelu, ELU, Softmax
 from utils.losses import MSE, CrossEntropy
-from utils.optimizer import SGD
+from utils.optimizer import SGD, Adam
 
 ###############################################################################
 # SET PARAMETERS                                                              #
 ###############################################################################
-EPOCHS = 3
-BATCH_SIZE = 8
+EPOCHS = 50
+BATCH_SIZE = 256
 LEARNING_RATE = 0.001
-NUM_SAMPLES = 250
 ###############################################################################
 
 
@@ -25,21 +24,23 @@ def main():
     data = Dataset()
 
     # Reduce data for testing
-    data.train = data.train[:300, :]
-    data.train_label = data.train_label[:300]
+    #data.train = data.train[:3000, :]
+    #data.train_label = data.train_label[:3000]
 
     ###############################################################################
     # BUILD MODEL ARCHITECTURE                                                    #
     ###############################################################################
     model = NeuralNetwork()
-    model.add(Dense(784, 128, "he"))
+    model.add(Dense(784, 256, "he"))
     model.add(ELU())
-    model.add(Dense(128, 32, "he"))
+    model.add(Dense(256, 128, "he"))
     model.add(ELU())
-    model.add(Dense(32, 10, "he"))
+    model.add(Dense(128, 64, "he"))
+    model.add(ELU())
+    model.add(Dense(64, 10, "he"))
     model.add(Softmax())
     model.add_loss(CrossEntropy())
-    optimizer = SGD(alpha=LEARNING_RATE)
+    optimizer = Adam(alpha=LEARNING_RATE)
     ###############################################################################
 
     print(model)
