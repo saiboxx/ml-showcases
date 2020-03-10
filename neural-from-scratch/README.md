@@ -52,9 +52,9 @@ The plot shows the training progress and the resulting decision boundary.
 Further experiments were done by using the classic *MNIST* dataset with Cross Entropy and Softmax.
 A better result is expected when tuning hyperparameters or using a larger net.
     
-    <p align="center">
-    <img src="media/mnist_classification.png">
-    </p>
+<p align="center">
+<img src="media/mnist_classification.png">
+</p>
 
 ### Build & train your model
 
