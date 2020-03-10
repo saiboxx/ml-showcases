@@ -12,8 +12,8 @@ from utils.optimizer import SGD
 ###############################################################################
 # SET PARAMETERS                                                              #
 ###############################################################################
-EPOCHS = 50
-BATCH_SIZE = 256
+EPOCHS = 3
+BATCH_SIZE = 8
 LEARNING_RATE = 0.001
 NUM_SAMPLES = 250
 ###############################################################################
@@ -25,8 +25,8 @@ def main():
     data = Dataset()
 
     # Reduce data for testing
-    #data.train = data.train[:300, :]
-    #data.train_label = data.train_label[:300]
+    data.train = data.train[:300, :]
+    data.train_label = data.train_label[:300]
 
     ###############################################################################
     # BUILD MODEL ARCHITECTURE                                                    #
@@ -98,12 +98,20 @@ def main():
 
 
 def plot_results(train_accuracies: list, train_losses: list, test_accuracies: list, test_losses: list):
-    plt.title('Training Progress')
-    plt.plot(train_accuracies, label='Training Accuracy')
-    plt.plot(train_losses, label='Training Loss')
-    plt.plot(test_accuracies, label='Test Accuracy')
-    plt.plot(test_losses, label='Test Loss')
-    plt.legend()
+    fig, ax1 = plt.subplots()
+    ax1.set_title('MNIST Training Progress')
+    ax1.set_xlabel('Epoch')
+    ax1.set_ylabel('Accuracy')
+    lns1 = ax1.plot(train_accuracies, label='Training Accuracy', color='#1f77b4')
+    lns2 = ax1.plot(test_accuracies, label='Test Accuracy', color='#17becf')
+    ax2 = ax1.twinx()
+    ax2.set_ylabel('Error')
+    lns3 = ax2.plot(train_losses, label='Training Loss', color='#ff7f0e')
+    lns4 = ax2.plot(test_losses, label='Test Loss', color='#d62728')
+    lns = lns1 + lns2 + lns3 + lns4
+    labs = [l.get_label() for l in lns]
+    ax1.legend(lns, labs)
+    fig.tight_layout()
     plt.show()
 
 
