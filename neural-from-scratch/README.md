@@ -36,8 +36,9 @@ As a result the toolbox provides building blocks for simple experiments and obse
 #### Optimizer
 
 - Stochastic Gradient Descent (SGD)
+- Adaptive Moment Estimation (Adam)
 
-**WIP & Ideas:** Adam, Batch Normalization
+**WIP & Ideas:** Dropout, Batch Normalization
 
 ### Examples
 
@@ -49,8 +50,8 @@ As a result the toolbox provides building blocks for simple experiments and obse
 The repository comes with two examples that can be produced by ```make moons``` and ```make circles```.
 The plot shows the training progress and the resulting decision boundary.
 
-Further experiments were done by using the classic *MNIST* dataset with Cross Entropy and Softmax.
-A better result is expected when tuning hyperparameters or using a larger net.
+Further experiments were done by using the classic *MNIST* dataset with Cross Entropy and Softmax, e.g. the following graph is
+a result from massive overfitting on the training data.
     
 <p align="center">
 <img src="media/mnist_classification.png">
