@@ -5,3 +5,4 @@ torchvision
 torchsummary
 tqdm
 scikit-image
+pytorch-lightning
