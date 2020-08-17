@@ -6,3 +6,4 @@ torchsummary
 tqdm
 scikit-image
 pytorch-lightning
+wandb
